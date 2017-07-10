@@ -1,9 +1,9 @@
 {
-	"name": "dereuromark/cakephp-queue",
+	"name": "justinyost/cakephp-queue",
 	"type": "cakephp-plugin",
-	"description": "The Queue plugin for CakePHP provides deferred task execution.",
+	"description": "The Queue plugin for CakePHP provides deferred task execution, forked to support SQLite.",
 	"keywords": ["cakephp","queue","deferred tasks","background"],
-	"homepage": "http://github.com/dereuromark/cakephp-queue",
+	"homepage": "http://github.com/justinyost/cakephp-queue",
 	"license": "MIT",
 	"authors": [
 		{
@@ -14,6 +14,11 @@
 		{
 			"name": "David Yell",
 			"homepage": "https://github.com/davidyell",
+			"role": "Contributor"
+		},
+		{
+			"name": "Justin Yost",
+			"homepage": "https://github.com/justinyost",
 			"role": "Contributor"
 		}
 	],

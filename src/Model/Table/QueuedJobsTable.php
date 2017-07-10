@@ -160,9 +160,9 @@ class QueuedJobsTable extends Table {
 				return [
 					'job_type',
 					'num' => $query->func()->count('*'),
-					'alltime' => $query->func()->avg('UNIX_TIMESTAMP(completed) - UNIX_TIMESTAMP(created)'),
-					'runtime' => $query->func()->avg('UNIX_TIMESTAMP(completed) - UNIX_TIMESTAMP(fetched)'),
-					'fetchdelay' => $query->func()->avg('UNIX_TIMESTAMP(fetched) - IF(notbefore is NULL, UNIX_TIMESTAMP(created), UNIX_TIMESTAMP(notbefore))'),
+					'alltime' => $query->func()->avg('STRFTIME("%s", completed) - STRFTIME("%s", created)'),
+					'runtime' => $query->func()->avg('STRFTIME("%s", completed) - STRFTIME("%s", fetched)'),
+					'fetchdelay' => $query->func()->avg('STRFTIME("%s", fetched) - CASE(notbefore) WHEN NULL THEN STRFTIME("%s", created) ELSE STRFTIME("%s", notbefore) END'),
 				];
 			},
 			'conditions' => [
@@ -194,7 +194,7 @@ class QueuedJobsTable extends Table {
 				'OR' => [],
 			],
 			'fields' => [
-				'age' => $query->newExpr()->add('IFNULL(TIMESTAMPDIFF(SECOND, "' . $nowStr . '", notbefore), 0)')
+				'age' => $query->newExpr()->add('IFNULL(STRFTIME("%s", "' . $nowStr . '") - STRFTIME("%s", notbefore), 0)')
 			],
 			'order' => [
 				'priority' => 'ASC',
@@ -230,7 +230,7 @@ class QueuedJobsTable extends Table {
 				'failed <' => ($task['retries'] + 1),
 			];
 			if (array_key_exists('rate', $task) && $tmp['job_type'] && array_key_exists($tmp['job_type'], $this->rateHistory)) {
-				$tmp['UNIX_TIMESTAMP() >='] = $this->rateHistory[$tmp['job_type']] + $task['rate'];
+				$tmp['STRFTIME("%s", "now") >='] = $this->rateHistory[$tmp['job_type']] + $task['rate'];
 			}
 			$options['conditions']['OR'][] = $tmp;
 		}
